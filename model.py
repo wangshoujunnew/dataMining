@@ -14,6 +14,28 @@ plt.ion()  # 打开交互模式 .clf 清除figure对象, cla 清除axes对象, p
 class SVMModel:
     feature = {x.strip().split()[0]: x.strip().split()[1] for x in open("v2_feature.txt", "r", encoding="utf-8").readlines()}
 
+    @staticmethod
+    def load_libsvm(f, n_feature): # 加载libsvm文件, skitlean自带的转为稠密向量的时候会默认填充空位0, 不可取
+        # df = [[] for x in range(n_feature)]
+        df = []
+        for i, line in enumerate(open(f, "r", encoding="utf-8").readlines()):
+            # 去除#后面的内容
+            line = line.split("#")[0]
+            label, *feature = line.strip().split("\t")
+            label = float(label)
+            sample = [None] * n_feature
+            for f in feature:
+                index, value = f.split(":")
+                index, value = int(index), float(value)
+                if index > n_feature:
+                    continue
+                sample[index - 1] = value
+            # 添加label
+            sample.append(label)
+            df.append(sample)
+        df = DataFrame(np.array(df), columns=[str(x + 1) for x in range(n_feature)] + ["target"], dtype=float)
+        return df
+
     @staticmethod  # 动态图的回调
     def plt_dy_call(fn, data):
         # 阻塞模式, show, 图片关闭前阻塞
@@ -128,25 +150,34 @@ class SVMModel:
             pearson = pearson_df.corr()
             # print(pearson)
             if index_dict != None:
-                col = index_dict.get(col, col)
-            infos.append((f"col: {col}, 空值率: {len(is_null_df) / len(df[target]): .4f} 相关系数: {pearson.iloc[0, 1]: .4f}", pearson.iloc[0, 1]))
-        infos.sort(key=lambda x: x[1] * -1)
+                col_name = index_dict.get(col, None)
+                if col_name:
+                    infos.append((f"col:{col_name}:{col}, 空值率: {len(is_null_df) / len(df[target]): .4f} 相关系数: {pearson.iloc[0, 1]: .4f}", pearson.iloc[0, 1]))
+        infos.sort(key=lambda x: math.fabs(x[1]) * -1)
         for info in infos:
             print(info)
 
 
     @staticmethod
     def load_data(data_path): # 加载数据
-        feature, label = load_svmlight_file(data_path) # load_svmlight_file 如果数据缺失, 默认填充的是0
-        feature = feature.todense()
+        # feature, label = load_svmlight_file(data_path) # load_svmlight_file 如果数据缺失, 默认填充的是0
+        # feature = feature.todense()
+        #
+        #
+        # feature_df = DataFrame(feature, columns=[str(x + 1)
+        #                                             for x in range(feature.shape[1])])
+        # label = DataFrame(label, columns=["target"])
+        # feature_df = feature_df[list(map(lambda x: x, SVMModel.feature.keys()))]
+        #
+        # feature_df = pd.concat([feature_df, label], axis=1)
 
-
-        feature_df = DataFrame(feature, columns=[str(x + 1)
-                                                    for x in range(feature.shape[1])])
-        label = DataFrame(label, columns=["target"])
-        feature_df = feature_df[list(map(lambda x: x, SVMModel.feature.keys()))]
-
-        feature_df = pd.concat([feature_df, label], axis=1)
+        feature_df = SVMModel.load_libsvm(data_path, 200)
         print(feature_df.head(10))
-
+        print(feature_df.dtypes)
         SVMModel.feature_pearson_image(feature_df.head(10), SVMModel.feature)
+        return feature_df
+
+
+    @staticmethod
+    def select_from_cart(df): # 根据cart数来选择重要的特征
+        pass
