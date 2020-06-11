@@ -25,7 +25,7 @@ class Test(TestCase):
         SVMModel.load_data(self.valid_data)
 
     def test_svm_load(self):
-        f, t = load_svmlight_file("d:/1.txt")
+        f, t = load_svmlight_file("train.dat")
         print(f.todense())
         print(t)
 
