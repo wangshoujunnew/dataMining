@@ -1,1 +1,6 @@
 .idea
+*csv
+*xlsx
+*data
+__pycache__
+.ipynb_checkpoints

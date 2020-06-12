@@ -6,11 +6,15 @@ from pandas import DataFrame
 from pyecharts import Line
 import math
 import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+import datetime
 
 plt.figure(figsize=(8, 6), dpi=80)  # 生成画布
 plt.ion()  # 打开交互模式 .clf 清除figure对象, cla 清除axes对象, pause 暂停功能
 
-
+# top3曝光情况
+# 值, 速度, 加速度
 class SVMModel:
     feature = {x.strip().split()[0]: x.strip().split()[1] for x in open("v2_feature.txt", "r", encoding="utf-8").readlines()}
 
@@ -133,6 +137,7 @@ class SVMModel:
         # plt.plot()
         plt.scatter(data[:, 0], data[:, 1])
 
+    @DeprecationWarning
     @staticmethod # 特征的相关系数绘制, 数据缺失的情况下无法计算相关性, 需要填充或者过滤掉缺失的值
     def feature_pearson_image(df: DataFrame, index_dict=None): # 皮尔逊相关系数 x,y协方差 / (x的标准差*y的标准差), 协方差=mean( (x-x_mean) * (y-y_mean) )
         """
@@ -160,24 +165,74 @@ class SVMModel:
 
     @staticmethod
     def load_data(data_path): # 加载数据
-        # feature, label = load_svmlight_file(data_path) # load_svmlight_file 如果数据缺失, 默认填充的是0
-        # feature = feature.todense()
-        #
-        #
-        # feature_df = DataFrame(feature, columns=[str(x + 1)
-        #                                             for x in range(feature.shape[1])])
-        # label = DataFrame(label, columns=["target"])
-        # feature_df = feature_df[list(map(lambda x: x, SVMModel.feature.keys()))]
-        #
-        # feature_df = pd.concat([feature_df, label], axis=1)
-
         feature_df = SVMModel.load_libsvm(data_path, 200)
         print(feature_df.head(10))
         print(feature_df.dtypes)
-        SVMModel.feature_pearson_image(feature_df.head(10), SVMModel.feature)
+        # SVMModel.feature_pearson_image(feature_df.head(10), SVMModel.feature)
         return feature_df
 
 
     @staticmethod
     def select_from_cart(df): # 根据cart数来选择重要的特征
         pass
+
+    @staticmethod
+    def _filter_feature(df):
+        # df的特征和所需要的的特征做交集
+        # 如果当前的特征没有任何的区分性, 则得到的方差为0, 则和其他的计算出来的协方差为0
+        jiao_set = set(SVMModel.feature.keys()).intersection(set(df.columns))
+        df = df[list(jiao_set) + ["target"]]
+        return df
+
+class CorrLook:
+    """
+    查看数据集的特征的相关性
+    """
+    pairs = []
+    index_featurename = SVMModel.feature
+
+    @staticmethod
+    def _get_feature_xiangguan_pair(df: DataFrame):
+        """
+        为了计算特征和特征的相关性, 先得到所有特征组合的pair
+        """
+        result = []
+        cols = df.columns
+        # 下标组队
+        for i_1, col in enumerate(cols):
+            for i_2, c in enumerate(cols):
+                if i_1 < i_2:
+                    result.append((col, c))
+
+        return result
+
+    @staticmethod
+    def show(df): # 此corr_df计算的时候只取了非空的
+        print("数据分布情况, 保存到csv中")
+
+        curtime = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        describe = df.describe(percentiles=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]).applymap(lambda x: round(x, 4))
+        describe.columns = [SVMModel.feature.get(x, x) for x in describe.columns]
+        describe.to_excel("describe{}.xlsx".format(curtime))
+
+
+        pairs = CorrLook._get_feature_xiangguan_pair(feature_df)
+        CorrLook.pairs = pairs
+
+        corr_df = df.corr()
+
+        result = []
+        for pair in CorrLook.pairs:
+            # , 前面为行, 行可以多个, 如果没有, 则默认是所有的列, loc 不是() , 而是 [] df.loc["0"]["0"] 第0行第0列, iloc 通过数字来取
+            result.append((pair, corr_df.loc[pair[0]][pair[1]]))
+        result = list(filter(lambda x: not pd.isna(x[1]), sorted(result, key=lambda x: x[1] * -1)))
+        for x in result:
+            print("%s#%s#%s" % (CorrLook.index_featurename.get(x[0][0], x[0][0]),
+                                  CorrLook.index_featurename.get(x[0][1], x[0][1]), x[1]))
+
+        return result
+
+feature_df = SVMModel.load_libsvm("d:/data/houseData/tujia_20191212.land.valid.data", 200)
+feature_df = SVMModel._filter_feature(feature_df)
+
+CorrLook.show(feature_df)

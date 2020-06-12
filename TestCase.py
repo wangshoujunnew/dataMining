@@ -8,6 +8,9 @@ from HTTP import *
 from SQL import *
 
 class Test(TestCase):
+    def __init__(self):
+        self.data_dir = "d:/data/houseData"
+        self.valid_data = f"{self.data_dir}/tujia_20191212.land.valid.data"
 
     def setUp(self):
         print("start ... 加载数据")
