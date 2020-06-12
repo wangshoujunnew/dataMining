@@ -4,8 +4,6 @@
 1. build()
 2. search()
 """
-
-
 class State(object):
     def __init__(self, index):
         self.index = index
@@ -84,104 +82,152 @@ class Node(object):
         self.children = {}
         self.last = None
         self.v = v
+        self.end = False
 
-# 构建前缀字典树先
-FontFixTree = Node()
 
-for pattern in patterns:
-    cur = FontFixTree
-    for p in pattern:
-        Node.charset.add(p) # 添加字符集
+class ACTree(object):
+    PrefixDictionaryTree = Node()
 
-        last = cur
-        if p not in cur.children.keys():
-            cur.children[p] = Node(p)
+    @staticmethod
+    def _build_prefix_DT(patterns):
+        """
+        通过pattern构建前缀字典树
+        :param patterns:
+        :return:
+        """
+        for pattern in patterns:
+            currentNode = ACTree.PrefixDictionaryTree
+            endNode = None
+            for pChar in pattern:
+                Node.charset.add(pChar)  # 添加字符集
 
-        cur = cur.children[p]
-        cur.last = last
-FontFixTree
+                last = currentNode
+                if pChar not in currentNode.children.keys():
+                    currentNode.children[pChar] = Node(pChar)
+                endNode = currentNode.children[pChar]
 
-def search_font_fix(str_p, root:Node):
-    """树的前缀搜索"""
-    cur = root
-    for s in str_p:
-        if s in cur.children.keys():
+                currentNode = currentNode.children[pChar]
+                currentNode.last = last
 
-        else:
-            return None
+            endNode.end = True  # 最后一个节点设置为结束节点
 
-def road_length(n:Node): # 当前节点到根节点的最长路径
-    k = 0
-    cur = n
-    while True:
-        if cur.last:
-            k += 1
-            cur = cur.last
-        else:
-            break
-    return k
 
-def check_max_back_fix(root:Node, pattern_back_fix):
-    """
-    检测其他分支和当前pattern的后缀匹配的前缀的最大长度, 然后最大程度的那个节点
-    """
-    m = len(pattern_back_fix)
-    k = 0
-    max_k_node = None
-    cur = root
-    for i in range(m):
-        i = i + 1
-        is_ok = True
-        for p in pattern_back_fix[:i]:
-            if p in cur.children.keys():
-                cur = cur.children.get(p)
+    @staticmethod
+    def _get_curnode_str(node: Node):
+        """
+        查看从根节点到当前节点的字符串
+        :param node:
+        :return:
+        """
+        init_char = ""
+        curNode = node
+        while curNode:
+            if curNode.v:  # 头结点是没有v的
+                init_char += curNode.v
+            curNode = curNode.last
+        return init_char[::-1]
+
+    @staticmethod
+    def _tree_prefix_search(target):
+        """
+        树的前缀搜索, 是为了找到路径A的后缀和其他路径的前缀的最大吻合长度
+        :param target:
+        :return:
+        """
+        curNode = ACTree.PrefixDictionaryTree
+        for pChar in target:
+            if pChar in curNode.children.keys():
+                curNode = curNode.children[pChar]
             else:
-                is_ok = False
-                break
-        if is_ok:
-            k = max(k, i)
-            max_k_node = cur
-    if k == 0:
-        return k, root
-    else:
-        return k, max_k_node
+                return None
+        return curNode
 
-# 当前节点的字符串
-def cur_node_str(node:Node):
-    s = ""
-    cur = node
-    while cur:
-        if cur.v: # 头结点是没有v的
-            s += cur.v
-        cur = cur.last
-    return s[::-1]
+    @staticmethod
+    def _backFix_match_preFix_node(pattern_backfix):
+        """
+        使用当前pattern的后缀取匹配其他pattern的前缀, 返回能够匹配到的最大长度的其他pattern的节点
+        :param root:
+        :param pattern_backfix:
+        :return:
+        """
+        root = ACTree.PrefixDictionaryTree
 
-# 广度优先遍历树
-def iter_tree(root:Node):
-    queue = []
-    for c in root.children:
-        n = root.children[c]
-        queue.append((c, n))
-    while queue:
-        c, n = queue.pop(0)
-        for chilren_c in n.children:
-            chilren_n = n.children[chilren_c]
-            queue.append((chilren_c, chilren_n))
+        max_length = len(pattern_backfix)
 
-        max_m = road_length(n) # 当前分支的后缀和其他分支的前缀最大长度只能为max_m
+        # 搜索前缀
+        result = root
+        for i in list(range(max_length))[::-1]:  # 从最大开始搜索
+            i += 1  # i表示要搜索的字符串长度, 而不是表示的下标, 而且搜索的是后缀
+            curNode = ACTree._tree_prefix_search(pattern_backfix[max_length - i:max_length])
+            if curNode != None:
+                return curNode
+            else:
+                pass  # 继续搜索看看有没有长度稍微小一点的前缀
+        return result  # 如果没有匹配的, 则只能返回根节点了
+
+    @staticmethod
+    def _build_fail_ref():
+        """
+        通过广度优先遍历给每个节点简历fail指针
+        :return:
+        """
+        root = ACTree.PrefixDictionaryTree
+        iter_queue = []
+        for c in root.children:
+            n = root.children[c]
+            iter_queue.append((c, n))
+        while iter_queue:
+            c, n = iter_queue.pop(0)
+            for chilren_c in n.children:
+                chilren_n = n.children[chilren_c]
+                iter_queue.append((chilren_c, chilren_n))
+
+            # 给每个节点的fail添加引用
+            curNodeStr = ACTree._get_curnode_str(n)
+            for x in Node.charset:
+                if x not in n.children.keys():
+                    # 当前节点的字符串+不再此pattern的字符组成新的pattern, 查看这个pattern的后缀和其他pattern的前缀的匹配情况, 如果没有, 则返回的节点是root节点
+                    toFail = ACTree._backFix_match_preFix_node(curNodeStr + x)
+                    n.fail[x] = toFail
+
+    @staticmethod
+    def ac_search(text: str):
+        curNode = ACTree.PrefixDictionaryTree
+        find = []
+        for i, s in enumerate(text):
+            i += 1
+            if s in curNode.children.keys():
+                curNode = curNode.children[s]
+            else:
+                curNode = curNode.fail.get(s, ACTree.PrefixDictionaryTree)  # 如果没有失败节点指向, 则默认指向根节点
+
+            if curNode.end:
+                pattern = ACTree._get_curnode_str(curNode)
+                # print("找到了: pattern: {}, 位置: {}, {}".format(pattern, i - len(pattern), i))
+                find.append((pattern, i - len(pattern), i))  # 找到了什么pattern, 在text中的起始位置在哪里
+
+        if find:
+            print("{}找到了pattern".format(text))
+            for i in find:
+                print(i)
+        else:
+            print("{}啥也没有找到".format(text))
 
 
-        # 给每个节点的fail添加引用
-        curNodeStr = cur_node_str(n)
-        for x in Node.charset:
-            if x not in n.children.keys():
-                k, max_lenth_node = check_max_back_fix(root, curNodeStr+x)
-                print("最大节点", k, cur_node_str(max_lenth_node))
-                toFail = max_lenth_node
-                n.fail[x] = toFail
+    @staticmethod
+    def build_stream(patterns):
+        """
+        构建流程
+        :return:
+        """
+        ACTree._build_prefix_DT(patterns)
+        ACTree._build_fail_ref()
 
-        print(c, n)
+def test_ac():
 
-iter_tree(FontFixTree)
 
-FontFixTree
+    ACTree.build_stream(patterns)
+    ACTree.ac_search(target)
+    ACTree.ac_search("".join(patterns))
+
+test_ac()
