@@ -21,8 +21,15 @@ class SVMModel:
     @staticmethod
     def load_libsvm(f, n_feature): # 加载libsvm文件, skitlean自带的转为稠密向量的时候会默认填充空位0, 不可取
         # df = [[] for x in range(n_feature)]
+        import random
+        random.seed(0) # 固定工随机重要方便复现
+        get_rate = 0.2 #数据提取的比例
+
         df = []
         for i, line in enumerate(open(f, "r", encoding="utf-8").readlines()):
+            if random.random() > 0.2:
+                continue
+
             # 去除#后面的内容
             line = line.split("#")[0]
             label, *feature = line.strip().split("\t")

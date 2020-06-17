@@ -3,7 +3,7 @@ from fileUtil import *
 from houseEmbed.UserSession import *
 from functional.streams import *
 from CommentTag import *
-from model import *
+from Model import *
 from HTTP import *
 from SQL import *
 

@@ -12,6 +12,26 @@ user_action_on_unit_fields = ["sid", "deviceID", "userID", "unitId", "actTime", 
                               "advertUnit", "adLabel",
                               "click", "book", "order", "orderStr"]
 
+schema_sample = [("sid", ""),
+("deviceID", ""),
+("userID", ""),
+("unitId", ""),
+("actTime", ""),
+("channel", ""),
+("platform", ""),
+("location", ""),
+("refPage", ""),
+("curPage", ""),
+("searchConditonStr", ""),
+("distance", ""),
+("unitPrice", ""),
+("pos", ""),
+("advertUnit", ""),
+("adLabel", ""),
+("click", ""),
+("book", ""),
+("order", ""),
+("orderStr", ",")]
 
 class LineBean:
     def parse_line(self, line):
