@@ -9,7 +9,6 @@ class State(object):
         self.index = index
         self.next = {}
 
-
 class LimitedAutoMachine(object):
     states = None  # pattern生成的所有状态
     pattern = None
@@ -37,6 +36,7 @@ class LimitedAutoMachine(object):
 
         m, C, max_k, states = LimitedAutoMachine.m, LimitedAutoMachine.C, LimitedAutoMachine.max_k, LimitedAutoMachine.states
 
+        # 所有的状态
         for s_i in range(m):
             for c in C:
                 text = pattern[:s_i] + c
@@ -71,6 +71,10 @@ def testLAM():
     text = "helloababacafsdfad"
     LimitedAutoMachine.search_str(text)
 
+print("有限自动机匹配")
+testLAM()
+
+
 # ============ AC 自动机
 patterns = ["abd", "abdk", "abchijn", "chnit", "ijabdf", "ijaij"]
 target = "sdmfhsgnshejfgnihaofhsrnihao"
@@ -83,7 +87,6 @@ class Node(object):
         self.last = None
         self.v = v
         self.end = False
-
 
 class ACTree(object):
     PrefixDictionaryTree = Node()
@@ -230,4 +233,4 @@ def test_ac():
     ACTree.ac_search(target)
     ACTree.ac_search("".join(patterns))
 
-test_ac()
+# test_ac()

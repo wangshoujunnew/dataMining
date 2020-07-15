@@ -36,4 +36,5 @@ else:
 spark = SparkSession.builder.config(conf=sparkConf).enableHiveSupport().getOrCreate()
 sc = SparkContext.getOrCreate()
 
+
 task_name = "pyspark"
