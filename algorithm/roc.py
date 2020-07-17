@@ -14,7 +14,13 @@ import numpy as np
 from sklearn.metrics import accuracy_score
 
 y_pred = [0, 2, 1, 3, 9, 9, 8, 5, 8, 1]
+
+# 多类分类（一个任务假设只能分给一个类别）， 多类标签（一个任务可以被分类给多个类别）， 多类输出（每个样本分配一组目标值，可以认为是预测样本的多个属性，比如具体地点的
+# 风速和大小 区别 todo ？？
+accuracy_score(np.array([[0, 1], [1, 1]]), np.ones((2, 2)))
+
 y_true = [0, 1, 2, 3, 2, 6, 3, 5, 9, 1]
+
 
 accuracy_score(y_true, y_pred)
 # Out[127]: 0.33333333333333331
