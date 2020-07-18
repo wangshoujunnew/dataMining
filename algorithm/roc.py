@@ -1,6 +1,6 @@
 # 模型的评价指标
 
-# presion, recall, F1-score, AUC, ROC
+# presion, recall, F1-score, AUC, ROC, PR
 
 # TP 后面的是预测值， 真阳性， 假阳性
 # 预测病人： 希望， 检测出TP， 找到真正患病的人: 真阳性的概率和假隐性的概率
@@ -17,6 +17,7 @@ y_pred = [0, 2, 1, 3, 9, 9, 8, 5, 8, 1]
 
 # 多类分类（一个任务假设只能分给一个类别）， 多类标签（一个任务可以被分类给多个类别）， 多类输出（每个样本分配一组目标值，可以认为是预测样本的多个属性，比如具体地点的
 # 风速和大小 区别 todo ？？
+
 accuracy_score(np.array([[0, 1], [1, 1]]), np.ones((2, 2)))
 
 y_true = [0, 1, 2, 3, 2, 6, 3, 5, 9, 1]
@@ -31,6 +32,7 @@ accuracy_score(y_true, y_pred, normalize=False)  # 类似海明距离，每个�
 # 2, metrics
 from sklearn import metrics
 
+# 精度如何针对多分类
 metrics.precision_score(y_true, y_pred, average='micro')  # 微平均，精确率
 # Out[130]: 0.33333333333333331
 
@@ -80,7 +82,7 @@ confusion_matrix(y_true, y_pred)
 #  *************ROC*************
 # 1，计算ROC值
 import numpy as np
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score, roc_curve
 
 y_true = np.array([0, 0, 1, 1])
 y_scores = np.array([0.1, 0.4, 0.35, 0.8])
@@ -144,3 +146,17 @@ from sklearn.metrics import r2_score
 y_true = [3, -0.5, 2, 7]
 y_pred = [2.5, 0.0, 2, 8]
 r2_score(y_true, y_pred)
+
+
+# -------------------- k折交叉验证 10次10折交叉验证的均值RepeatedKFold
+from sklearn.model_selection import RepeatedKFold
+import sklearn.datasets as datasets
+import time
+iris = datasets.load_iris()
+
+iris
+time_int = int(time.time())
+kfold = RepeatedKFold(n_splits=10, n_repeats=1, random_state=time_int)
+datas = kfold.split(iris["data"], iris["target"])
+datas = list(datas)
+datas
