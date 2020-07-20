@@ -11,6 +11,7 @@
       <sourceFolder url="file://$MODULE_DIR$/sparkDev/price" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/utils" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/rank_data_python/comm" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/algorithm" isTestSource="false" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.7" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

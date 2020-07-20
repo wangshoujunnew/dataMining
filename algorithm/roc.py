@@ -22,7 +22,6 @@ accuracy_score(np.array([[0, 1], [1, 1]]), np.ones((2, 2)))
 
 y_true = [0, 1, 2, 3, 2, 6, 3, 5, 9, 1]
 
-
 accuracy_score(y_true, y_pred)
 # Out[127]: 0.33333333333333331
 
@@ -32,7 +31,7 @@ accuracy_score(y_true, y_pred, normalize=False)  # 类似海明距离，每个�
 # 2, metrics
 from sklearn import metrics
 
-# 精度如何针对多分类
+# 精度如何针对多分类 todo ??
 metrics.precision_score(y_true, y_pred, average='micro')  # 微平均，精确率
 # Out[130]: 0.33333333333333331
 
@@ -147,16 +146,52 @@ y_true = [3, -0.5, 2, 7]
 y_pred = [2.5, 0.0, 2, 8]
 r2_score(y_true, y_pred)
 
-
 # -------------------- k折交叉验证 10次10折交叉验证的均值RepeatedKFold
+# 每次形成数据集为每一次repreat 就会得到(k-1, 1)的一个一个k次集合及数组的长度为 x = repeat * k*(k-1)
 from sklearn.model_selection import RepeatedKFold
 import sklearn.datasets as datasets
 import time
+from sklearn.model_selection import KFold
+
 iris = datasets.load_iris()
 
 iris
 time_int = int(time.time())
 kfold = RepeatedKFold(n_splits=10, n_repeats=1, random_state=time_int)
-datas = kfold.split(iris["data"], iris["target"])
+iris_data = iris["data"]
+datas = kfold.split(iris["data"][:100], iris["target"][:100])
 datas = list(datas)
 datas
+
+kfold_1 = KFold(n_splits=10)
+for x, y in kfold_1.split(iris["data"][:100], iris["target"][:100]):
+    print("===========")  # 1折留作训练集 -> (9, 1)
+
+# 采样
+from sklearn.utils import resample
+
+# 随机数
+import numpy as np
+
+rng = np.random.RandomState(0)  # 0=seed
+a = rng.uniform(low=0, high=1)  # 均匀分布
+b = rng.binomial(10, 0.5)  # 二项式分布: 6, 表示有6次得到1
+c = rng.multinomial(10, pvals=[0.1, 0.2, 0.7])  # 多项式分布, 做10次试验, 分布出现1,2,3类别的情况 c = [1,2,7] 出现1:1次, 出现2:2次, 出现3:7次
+d = rng.beta(1, 2)
+# e = rng.dirichlet()
+
+rng.uniform(size=10)
+rng.normal(size=10)
+rng.binomial(n=20, p=0.1, size=1)
+
+sum(np.random.binomial(9, 0.1, 20000) > 0)/20000
+# np.random.binomial(9, 0.1, 20000)
+
+rng.multinomial(10, [0.1, 0.2, 0.7])
+
+rng.beta(1, 5, 10)
+rng.dirichlet((10, 5, 3), 20)
+rng.poisson()
+
+
+# rank评估指标
