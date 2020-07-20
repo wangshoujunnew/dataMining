@@ -12,11 +12,7 @@
       <sourceFolder url="file://$MODULE_DIR$/utils" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/rank_data_python/comm" isTestSource="false" />
     </content>
-<<<<<<< HEAD
     <orderEntry type="jdk" jdkName="Python 3.7" jdkType="Python SDK" />
-=======
-    <orderEntry type="jdk" jdkName="Python 3.7 (dataMining)" jdkType="Python SDK" />
->>>>>>> 3581701182acac0e08cd353f8cd3e70b1cc49de5
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
