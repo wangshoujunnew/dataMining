@@ -49,7 +49,7 @@ def switch_env():
     name = socket.getfqdn(socket.gethostname())
     addr = socket.gethostbyname(name)
     print(addr)
-    if "addr" == "172.31.84.108":
+    if "addr" == "108":
         env = "tujia"
 
 
@@ -66,11 +66,11 @@ sparkConf = (
 ) if env == "tujia" else (
     SparkConf().set(
         "warehouselocation",
-        "viewfs://qunarcluster/user/tujiadev/home/data/hive/warehouse/",
+        "",
     ).set(
         "spark.sql.warehouse.dir",
-        "viewfs://qunarcluster/user/tujiadev/home/data/hive/warehouse/",
-    ).set("hive.metastore.uris", "thrift://l-ds4.data.cn2.qunar.com:9083")
+        "",
+    ).set("hive.metastore.uris", "")
         .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
         .set("hive.exec.dynamic.partition", "true")
         .set("hive.exec.dynamic.partition.mode", "nonstrict")
