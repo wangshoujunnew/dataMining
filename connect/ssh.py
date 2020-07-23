@@ -1,8 +1,9 @@
 # https://pypi.org/project/sshtunnel/ 下载 ssh 隧道
 import sshtunnel
 from sshtunnel import SSHTunnelForwarder
+# 1. 建立跳板机到各个网站的端口转发, 就不需要在使用windows跳板机了
 import paramiko
-
+# https://zhuanlan.zhihu.com/p/94624842 知乎链接 多层ssh
 # 无法直接连接的原因 Authentication refused: bad ownership or modes for directory /home/shoujunw
 # https://blog.csdn.net/lovebyz/article/details/87916317 查看sshd中是否其中授权, 改完目录权限成功登陆
 
@@ -23,7 +24,7 @@ server = SSHTunnelForwarder(
     # ssh_private_key_password="secret",
 
     # ssh_private_key_password="fGLau6Lgmb7BhpSy",
-    remote_bind_address=('', 22),  # 访问的远程主机
+    remote_bind_address=('', 8889),  # 访问的远程主机
 )
 
 server.start()
@@ -56,10 +57,10 @@ print(server.local_bind_port)  # show assigned local port
 #         ("", 10010),
 #         # ssh_pkey="/var/ssh/rsa_key",
 #         # ssh_private_key_password="secret",
-#         ssh_address_or_host=('172.31.90.24', 22),  # 跳转机
+#         ssh_address_or_host=('', 22),  # 跳转机
 #         ssh_username="shoujunw",
 #         ssh_password="fGLau6Lgmb7BhpSy",
-#         remote_bind_address=("172.31.84.108", 22),
+#         remote_bind_address=("", 22),
 #         local_bind_address=('0.0.0.0', 10022)
 # ) as tunnel:
 #     client = paramiko.SSHClient()
