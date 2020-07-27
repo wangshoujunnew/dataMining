@@ -67,7 +67,7 @@ def map2str(l):
 
 
 # 将文件load,然后加载成map对象
-def load2obj(f, sample, header=None):
+def load2obj(f, sample, header=None, seq="\t"):
     print("======load")
     Counter.error_lines = 0
     """f: 文件位置
@@ -78,7 +78,7 @@ def load2obj(f, sample, header=None):
     Counter.data_counter(True)
     for f in open_new(f):
         try:
-            arr = f.strip().split("\t")
+            arr = f.strip().split(seq)
             Counter.data_counter()
             if header != None and Counter.counter > header:
                 return tmp

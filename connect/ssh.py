@@ -52,7 +52,7 @@ import paramiko
 # 还需要将本地windows或者mac的秘钥填写到目标主机上
 server2 = SSHTunnelForwarder(
     # local_bind_address=('0.0.0.0', 22),  # 本地端口启动10022服务, 跳转到跳板机的22服务,然后连接108的22端口
-    local_bind_addresses=[('0.0.0.0', 24580)],
+    local_bind_addresses=[('0.0.0.0', 24580), ('0.0.0.0', 24522)],
 
     ssh_address_or_host=('172.31.90.46', 22),  # 跳转机
     ssh_pkey="D:\\usr\\share\\id_rsa",
@@ -66,7 +66,7 @@ server2 = SSHTunnelForwarder(
 
     # ssh_private_key_password="fGLau6Lgmb7BhpSy",
     # remote_bind_address=('172.31.84.108', 22),  # 访问的远程主机
-    remote_bind_addresses=[('172.31.35.245', 22)]
+    remote_bind_addresses=[('172.31.35.245', 9999), ('172.31.35.245', 22)]
 )
 
 server2.start()
