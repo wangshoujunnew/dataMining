@@ -12,6 +12,7 @@
       <sourceFolder url="file://$MODULE_DIR$/utils" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/rank_data_python/comm" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/algorithm" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/rank" isTestSource="false" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.7" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
