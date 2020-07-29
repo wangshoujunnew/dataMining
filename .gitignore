@@ -1,5 +1,5 @@
 #.idea/*
-#.idea
+.idea
 *csv
 *xlsx
 *data
@@ -8,3 +8,10 @@ __pycache__
 topic
 zoo5998.zip
 【机器学习】*
+metastore_db
+test
+.DS_Store
+nohup.out
+*.html
+*.pdf
+*.png
