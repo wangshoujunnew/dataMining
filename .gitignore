@@ -16,3 +16,8 @@ nohup.out
 *.pdf
 *.png
 ssh.yml
+test
+model
+model2
+tensorboard*
+bert_model
