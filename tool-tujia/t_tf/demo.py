@@ -1,49 +1,49 @@
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 from tensorflow.python.framework import dtypes
 
 print(tf.__version__)
 
 
-# c1 = tf.constant([0], name="con1")  # name: con1:0
-# c2 = tf.constant([0], name="con1")  # name: con1_1:1, 快速找到变量对应在图中的位置
-# c3 = tf.constant([0])  # name: Const:0
-# c4 = tf.Variable([0], dtype=dtypes.float32)  # name: Variable:0
-# c5 = tf.Variable([0], dtype=dtypes.float32)  # name: Variable_1:0
-# c6 = tf.Variable([0], dtype=dtypes.float32)  # name: Variable_2:0
-#
-# g1 = tf.Graph()
-# with g1.as_default():
-#     # v1这个张量的名字为v1:0
-#     v = tf.get_variable("v1", initializer=tf.ones_initializer(dtype=dtypes.float32), shape=(10, 10))
-#     with tf.variable_scope("test"):
-#         c7 = tf.constant([0], name="test1")  # name: test/Const:0
-#         print("快速获取当前变量的tensor_name =========> ", c7.name)
-#         c8 = tf.constant([0])  # name: test/Const_1:0, 快速找到变量对应在图中的位置
-#         c9 = tf.get_variable("test2", initializer=tf.zeros_initializer(dtype=dtypes.float32), shape=(10, 10))
-#
-# print(g1)
+c1 = tf.constant([0], name="con1")  # name: con1:0
+c2 = tf.constant([0], name="con1")  # name: con1_1:1, 快速找到变量对应在图中的位置
+c3 = tf.constant([0])  # name: Const:0
+c4 = tf.Variable([0], dtype=dtypes.float32)  # name: Variable:0
+c5 = tf.Variable([0], dtype=dtypes.float32)  # name: Variable_1:0
+c6 = tf.Variable([0], dtype=dtypes.float32)  # name: Variable_2:0
+
+g1 = tf.Graph()
+with g1.as_default():
+    # v1这个张量的名字为v1:0
+    v = tf.get_variable("v1", initializer=tf.ones_initializer(dtype=dtypes.float32), shape=(10, 10))
+    with tf.variable_scope("test"):
+        c7 = tf.constant([0], name="test1")  # name: test/Const:0
+        print("快速获取当前变量的tensor_name =========> ", c7.name)
+        c8 = tf.constant([0])  # name: test/Const_1:0, 快速找到变量对应在图中的位置
+        c9 = tf.get_variable("test2", initializer=tf.zeros_initializer(dtype=dtypes.float32), shape=(10, 10))
+
+print(g1)
 
 
-# def save():
-#     with tf.Session(graph=g1) as sess:
-#         saver = tf.train.Saver()
-#         sess.run(tf.global_variables_initializer())
-#
-#         with tf.variable_scope("", reuse=True):
-#             # v = g1.get_tensor_by_name("v") # 值的形式 <op_name>:<output_index>
-#             # v_assign = g1.get_tensor_by_name("v/Assign")
-#             print(sess.run(tf.get_variable("v1")))  # 变量名
-#
-#         with tf.variable_scope("test", reuse=True):
-#             print(sess.run(tf.get_variable("test2")))  # 变量名, 只能获取tf.get_variable 方法创建的变量
-#
-#         print(sess.run(g1.get_tensor_by_name("v1:0")))
-#         print(sess.run(g1.get_tensor_by_name("test/Const:0")))  # tensorname: scop/<>:<>
-#
-#         saver.save(sess, "model/model.ckpt")
-#
-#         writer = tf.summary.FileWriter("tensorboard", g1)
-#         writer.close()
+def save():
+    with tf.Session(graph=g1) as sess:
+        saver = tf.train.Saver()
+        sess.run(tf.global_variables_initializer())
+
+        with tf.variable_scope("", reuse=True):
+            # v = g1.get_tensor_by_name("v") # 值的形式 <op_name>:<output_index>
+            # v_assign = g1.get_tensor_by_name("v/Assign")
+            print(sess.run(tf.get_variable("v1")))  # 变量名
+
+        with tf.variable_scope("test", reuse=True):
+            print(sess.run(tf.get_variable("test2")))  # 变量名, 只能获取tf.get_variable 方法创建的变量
+
+        print(sess.run(g1.get_tensor_by_name("v1:0")))
+        print(sess.run(g1.get_tensor_by_name("test/Const:0")))  # tensorname: scop/<>:<>
+
+        saver.save(sess, "model/model.ckpt")
+
+        writer = tf.summary.FileWriter("tensorboard", g1)
+        writer.close()
 
 
 def load():
@@ -66,4 +66,30 @@ def load():
 
 
 
-load()
+def load_bert():
+    with tf.Session() as sess:
+        saver = tf.train.import_meta_graph("c:/Users/shoujunw/PycharmProjects/dataMining/modelSave/bert/model.ckpt-1286.meta")
+        saver.restore(sess, "c:/Users/shoujunw/PycharmProjects/dataMining/modelSave/bert/model.ckpt-1286")
+
+        # writer = tf.summary.FileWriter("bertGraph", sess.graph)
+        # writer.close()
+        for v in tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES):
+            print(v)
+
+        print("======================")
+        for v in tf.contrib.graph_editor.get_tensors(tf.get_default_graph()):
+            print(v)
+
+        # tf.get_variable_to_shape_map
+
+
+def getOPname():
+    from tensorflow.python import pywrap_tensorflow
+    checkpoint_path = 'c:/Users/shoujunw/PycharmProjects/dataMining/modelSave/bert/model.ckpt-1286'
+    reader = pywrap_tensorflow.NewCheckpointReader(checkpoint_path)
+    var_to_shape_map = reader.get_variable_to_shape_map()
+    for key in var_to_shape_map:
+        print("tensor_name: ", key)
+
+# getOPname()
+load_bert()
