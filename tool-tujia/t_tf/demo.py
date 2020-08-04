@@ -1,8 +1,9 @@
 import tensorflow as tf
 from tensorflow.python.framework import dtypes
+from tensorflow.python.saved_model import tag_constants
+from tensorflow.python.saved_model.signature_def_utils_impl import predict_signature_def
 
 print(tf.__version__)
-
 
 c1 = tf.constant([0], name="con1")  # name: con1:0
 c2 = tf.constant([0], name="con1")  # name: con1_1:1, 快速找到变量对应在图中的位置
@@ -10,6 +11,10 @@ c3 = tf.constant([0])  # name: Const:0
 c4 = tf.Variable([0], dtype=dtypes.float32)  # name: Variable:0
 c5 = tf.Variable([0], dtype=dtypes.float32)  # name: Variable_1:0
 c6 = tf.Variable([0], dtype=dtypes.float32)  # name: Variable_2:0
+
+myInput = tf.placeholder(dtype=dtypes.float32, shape=[None, 1], name="myInput")
+y = myInput + 1
+myOutput = tf.identity(y, name="myOutput")  # 给tensor重命名
 
 g1 = tf.Graph()
 with g1.as_default():
@@ -22,6 +27,9 @@ with g1.as_default():
         c9 = tf.get_variable("test2", initializer=tf.zeros_initializer(dtype=dtypes.float32), shape=(10, 10))
 
 print(g1)
+
+sess = tf.Session()
+sess.run(tf.global_variables_initializer())
 
 
 def save():
@@ -46,6 +54,37 @@ def save():
         writer.close()
 
 
+def saveModelDemo():
+    """
+    使用saveModel的格式保存模型
+    :return:
+    """
+    with tf.Session(graph=g1) as sess:
+        sess.run(tf.global_variables_initializer())
+        builder = tf.saved_model.builder.SavedModelBuilder("./saveModel")
+        signature = predict_signature_def(inputs={'myInput': myInput},
+                                          outputs={'myOutput': myOutput})
+        builder.add_meta_graph_and_variables(sess=sess,
+                                             tags=[tag_constants.SERVING],
+                                             signature_def_map={'predict': signature})
+        builder.save()
+
+
+# saveModelDemo()
+def loadSaveModel(sess: tf.Session):
+    tf.saved_model.loader.load(sess, export_dir="./saveModel", tags=[tag_constants.SERVING])
+    graph = tf.get_default_graph()
+    x = graph.get_tensor_by_name("myInput:0")
+    y = graph.get_tensor_by_name("myOutput:0")
+    yout = sess.run(y, feed_dict={
+        x: [[1]]
+    })
+    print(yout)
+
+
+loadSaveModel(sess)
+
+
 def load():
     # 单纯的查看bert需要又数据配置等的支持,本地无法实现, 在对应的服务器上实现
     """Error
@@ -62,8 +101,6 @@ def load():
         # saver.save(sess, "model/test.ckpt")
         writer = tf.summary.FileWriter("tensorboard_bert", sess.graph)
         writer.close()
-
-
 
 
 def load_bert():
@@ -91,5 +128,8 @@ def getOPname():
     for key in var_to_shape_map:
         print("tensor_name: ", key)
 
+
 # getOPname()
-load_bert()
+# load_bert()
+
+sess.close()
