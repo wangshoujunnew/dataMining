@@ -13,8 +13,9 @@
       <sourceFolder url="file://$MODULE_DIR$/rank_data_python/comm" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/algorithm" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/rank" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/venv" />
       <sourceFolder url="file://$MODULE_DIR$/tool-tujia/t_tf" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/learn" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.7 (dataMining)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
