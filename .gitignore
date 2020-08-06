@@ -16,3 +16,4 @@ nohup.out
 *.pdf
 *.png
 ssh.yml
+model_*

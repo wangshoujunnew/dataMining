@@ -34,7 +34,7 @@ class Comtag:
 
 
 # 排序,线上
-class unitRank:
+class unitRank(TestCase):
     def testDemo(self):
         print("this is a test")
 
@@ -53,8 +53,8 @@ class unitRank:
         "sort": "recommend",
         "manual": 1,
         "bucket": "B",
-        # "checkinDate": "2020-06-18",
-        # "checkoutDate": "2020-06-19",
+        "checkinDate": "2020-06-18",
+        "checkoutDate": "2020-06-19",
         "peopleNum": 0,
         "bedNum": 0,
         "channel": 1,
@@ -63,10 +63,74 @@ class unitRank:
     c = {"userId": 121534595}
     url = url1
 
-    @staticmethod
-    def test_rankv2():
+    def test_rankv2(self):
         debug = "true"
         param = "?b={}&c={}&debug={}".format(json.dumps(unitRank.b), json.dumps(unitRank.c), debug)
-        r = requests.get("{}/rankv2{}".format(unitRank.url, param))
+        r = requests.get("{}/rankv2{}".format("http://localhost:6070", param))
         print(r.status_code)
-        return r
+        print(r.text)
+
+    def test_epSelect(self):
+        """
+        解释性服务 rankv2 接口
+        :return:
+        """
+        b = {
+            "cityId": 10,
+            "coord": "",
+            "landmarkName": "",
+            "sort": "recommend",
+            "manual": 1,
+            "bucket": "B",
+            "checkinDate": "2020-06-18",
+            "checkoutDate": "2020-06-19",
+            "peopleNum": 0,
+            "bedNum": 0,
+            "channel": 1,
+            "originchannel": 1,
+            "unitIds": [
+                {"id": 377223, "distance": 10} #311334520
+            ]
+        }
+        c = {
+            "deviceId": "0D2098ED96FA966E60765642E95D717A"
+        }
+        param = "?b={}&c={}&debug={}".format(json.dumps(b), json.dumps(c), "true")
+        req = "{}/epSelect{}".format("http://localhost:6070", param)
+        print(req)
+        r = requests.get(req)
+        print(r.status_code)
+        print(r.text)
+        #return r
+
+    def test_epChange(self):
+        """
+        解释性服务 rankv2 接口
+        :return:
+        """
+        b = {
+            "cityId": 10,
+            "coord": "",
+            "landmarkName": "",
+            "sort": "recommend",
+            "manual": 1,
+            "bucket": "B",
+            "checkinDate": "2020-06-18",
+            "checkoutDate": "2020-06-19",
+            "peopleNum": 0,
+            "bedNum": 0,
+            "channel": 1,
+            "originchannel": 1,
+            "unitId": 377223,
+            "featureNum": 104,
+            "distance": 10.0
+        }
+        c = {
+            "deviceId": "0D2098ED96FA966E60765642E95D717A"
+        }
+        param = "?b={}&c={}&debug={}".format(json.dumps(b), json.dumps(c), "true")
+        req = "{}/epChange{}".format("http://localhost:6070", param)
+        print(req)
+        r = requests.get(req)
+        print(r.status_code)
+        print(r.text)

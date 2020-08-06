@@ -1,10 +1,20 @@
 jump24:
   jumpip: 172.31.90.24
   password: "fGLau6Lgmb7BhpSy"
+# 如果不成功, 需要改变目标机器的~/.ssh 权限 755
+# 坑: 拷贝授权文件和已知道的主机的内容
+#ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCF+Ax6BAWCzW1vSkcW3pjMjkdG8jPLmSh8nBAFMWENL0c1+qjkhu7PlKnMtAx47YfQUR0N9g7LcdJ57/cijskNWJvci28BcKrFA9thl2xq5a5zFCyEMEdiAnVs3ychJCe8g0vqVfPf1OzU91avnxVW9OgeNnk/2EkcqFetALifWnS7WMFnnQg0eFuVln4MS3zKMnnDwDQ5pqe6kyJiju69qF+tdom6eOzMPPdgKtbfQzLqgCdQtttFpiAhKZfQC7q0VJ/MEf4nFd05lkMZjTYV+e9zYNYbbMU5o73ZKnp3plyp2rgV+jxFPCAyEZ9dWaaAvMPXRV+VIYqJHkK+XZQ5
+#ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDpo+2TgoLe7t9i+d/RVQh55gJG0yYWTCIn8nhD9GDopyOz944Qf/0rxTTSy48okGOLgJqIp8h0gXHfviMjTQMGTjGDN0eI4GssDSxkYe7+jyNgphyqGOO+0+0q/iPYN+sFq3lIaVC/jcEk5v6Hhosdf4Ig5zPNHidZeUpimo8YmfpIFtmbP9bS6vJMCwTPtIwnfz80M/1m5dX4KdjzlCLh3NyPokdGYYvC6pqX8nnb/MBxjY3/dxdKRx3TAL+R4jF3sLdiTIgCzutCo6kMlhXPJcTnUz+1XJ18C/flwQY6Uo4JncI8RGA4/Q3J03f8wNNPL+8dWgFyztSBWUShEm1gVVP+UhZC/9aLnv+BlU0Mcffs1ypOGezdgzET0VRE1+16ZCo344fk4wHDfuoEvmLqp7kAqhuqdKYX1CfXO4pqF3XTLGjBZ0krNBnsyAAx6JE/UBPcg0XJ2/35Np8y4GFFmcprE76TCt5rmgP8EliOjzg+qInW38DXq4zZc3WrymE= shoujunw@DPshoujunw
+#ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDV7W0EtWlfG12gqG68PuQ9mRyodQ7kNDox99wOUex2nYRGs1DN/K5SKzQw1G7tS5Fw6Ne2zpQbk785bYtV1JanQHrjGEzVdihP8SeYo6iXgb/KJSdPQG62+oktLkue4vBL+GsO045WdKMoTepRT1jcTOHnOL8NBLMvIQ/a+KqznHCKXA9HJ6SubtPVVnHBtxrRrypOIbU6Bj++hpa1C8oQqnObhpkpTYj/mBAA8Bn46Lp/G78azZYEmACwKUOMyeDhFAjbstknUC6bezHeGLww9Ozsi9ZVyGeIuyAPjDHJL20YUwG4QoIrKW6cdkKOTaesnKA2JxEwuH6VmzTH6ZTwQtas+ZMZt81emnfjgZriGfXU4d/qpVkDgH4nXafLlz0IPxLjZs/quBwAgbaWujQ4Rn6VP5YdOWWOslsWMKGbT9kmbPhft0xMtqwuyF/cHIj+HXdCtMcwIM0glXz7mnzxsMMIM1stAUS8aPYgPBF1zOJEPxRhwpFkn34GH/guxC8= tjuser@tjuserdeMacBook-Pro.local
 
+# know_hosts
+# 172.31.132.158 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDismPYhPI5UaKg4Zf2KnMzUGfsK7UZyuv8Be7yiUKN+yxtoO1k4acX81lI3rmi53zIwqbBSpNvItt4qD3WRFByfXNpt4fy9xfuJXYtQN1cRPBONHtsZn3NDwuRQb/Lxp1/OnvsXHBVPChUrlHjN06BSFpNVjBvssprOq0LtULgRpK7eDchNElHJqW+bxGTuoR1E+IOJrZDRDHa7k95T2noPjEbEY/Q70e6XZgBjy8Yjjt/L9AXKrJs6gvR8WyJoqdHhNI+Uf2/bxY3J+Ro6yJ1VTET1ViFXHjrIbXcb0Q/lfJ4vHkfX2kt3z4hiyy60M1111ffHxHvkIrV4RUWhoNx
 jump46: # 172.31.90.46
   jumpip: 172.31.90.46
   ssh_pkey: "~/.ssh/id_rsa"
   password: "INYAWq!ZWvpOzW-"
   10.95.192.168: ["22:16822:True", 10000, 8081, 10081, "873:16873"] # ssh, hiveserver, notebook, :后面跟的是local的端口:是否开启这个端口的映射，默认开启
   172.31.35.245: ["22:24522", "9999:24599"]
+  172.31.84.110: ["22:11022"]
+  172.31.84.109: ["22:10922", 8788, 6070]
+  172.31.84.106: [9800]
