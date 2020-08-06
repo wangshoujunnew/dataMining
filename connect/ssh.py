@@ -5,7 +5,7 @@ from sshtunnel import SSHTunnelForwarder
 
 jump = sys.argv[1] if len(sys.argv) > 1 else "jump46"
 
-config = yaml.load(open("ssh.yml"))
+config = yaml.load(open("ssh.yml", encoding="utf-8"))
 config = config[jump]
 print(config)
 

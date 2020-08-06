@@ -17,3 +17,12 @@ nohup.out
 *.png
 ssh.yml
 model_*
+test
+model
+model2
+tensorboard*
+bert_model
+bertGraph
+modelSave
+estimatorModel
+venv
