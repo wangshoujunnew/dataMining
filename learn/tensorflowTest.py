@@ -25,8 +25,21 @@ class TensorflowTest(TestCase):
         -rw-r--r-- 1 shoujunw 1049089    187  8月  6 22:19 model.ckpt-25.index
         -rw-r--r-- 1 shoujunw 1049089  55449  8月  6 22:19 model.ckpt-25.meta
         """
+
     def testEstimatorModelExport(self):
         print("查看模型的结果, 是否可以看到定义的placeholder")
         model_train_server("d:/saveModel/estimator_export")
 
-
+    def testLoss(self):
+        print("均方误差")
+        predictions = tf.constant([1, 1], dtype=tf.int64)
+        labels = [0, 1]
+        loss = tf.losses.mean_squared_error(labels=labels, predictions=predictions)
+        print(self.sess.run(loss))
+        print("二分类交叉熵")
+        predictions = tf.constant([[0.1, 0.9], [0.1, 0.9]])
+        labels = [1, 0]
+        loss = tf.losses.sparse_softmax_cross_entropy(logits=predictions, labels=labels)
+        print(self.sess.run(loss))
+        print("pair对的损失")
+        tf.losses.mean_pairwise_squared_error
