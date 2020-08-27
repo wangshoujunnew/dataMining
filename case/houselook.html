@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>房屋查看工具</title>
+</head>
+<script src="http://lib.sinaapp.com/js/jquery/2.0.2/jquery-2.0.2.min.js"></script>
+<script>
+    console.log("hello case ...")
+</script>
+
+<script>
+    $(function(){
+        $("li").on("click", function(){
+            var url = $(this).text()
+            url = "https://www.tujia.com/detail/"+ url +".htm"
+            console.log("访问url" + url)
+
+            $("iframe").attr('src', url)
+        })
+    })
+</script>
+<body>
+<!--左边是一个房屋列表, 右边是展示, 当点击url的时候, 右边展示url对应的内容-->
+<!--内容主体-->
+
+<div class="mainContext">
+
+    <style>
+        .leftContext{
+            float: left;
+            width: 200px;
+        }
+    </style>
+
+    <!--左侧内容-->
+    <div class="leftContext">
+        <ul>
+            <li>10781807</li>
+            <li>10781807</li>
+            <li>10781807</li>
+            <li>10781807</li>
+            <li>10781807</li>
+            <li>10781807</li>
+            <li>10781807</li>
+            <li>10781807</li>
+            <li>10781807</li>
+            <li>10781807</li>
+        </ul>
+    </div>
+    <style>
+        iframe{
+            height: 100%;
+            width: 1500px;
+            float:left;
+        }
+    </style>
+    <iframe src="http://www.tujia.com" align="rightContext">
+</iframe>
+
+</div>
+</body>
+</html>

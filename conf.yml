@@ -1,0 +1,34 @@
+wide&deep:
+  address: tujia
+  author: shoujunw
+  train: D:/data/houseData/tujia_20191212.land.valid.data
+  feature:
+    - {index: 10} # 房屋到搜索地标的距离
+    - {index: 31} # 房屋的头图分
+
+  numeric_column: ["10", "31"] # 连续性特征
+  bucket_column: ["10", "31"] # 分桶特征
+  cross_column: ["10&31"] # 交叉特征
+  embed_column: [] # embed特征
+  batch_size: 10
+  feature_size: 4
+
+  features:
+    "10":
+      is_wide: true
+      is_deep: true
+      boundaries: [1, 2]
+      buckets: 3
+    "31":
+      is_wide: false
+      is_deep: false
+      boundaries: [1, 2]
+      buckets: 3
+    "400":
+      boundaries: [5, 10, 50, 100]
+      buckets: 5
+    "10&31":
+      hash_bucket_size: 100
+      is_wide: false
+
+
