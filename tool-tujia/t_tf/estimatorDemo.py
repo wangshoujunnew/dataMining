@@ -113,7 +113,7 @@ if __name__ == '__main__':
             output_types=(tf.float32, tf.float32)  # x的类型和y的类型
             , generator=InputFn.getValue
         )
-        next = dataset.batch(1).make_one_shot_iterator().get_next()  # 如果要预测多个在这里设置batch(n)
+        next = dataset.batch(2).make_one_shot_iterator().get_next()  # 如果要预测多个在这里设置batch(n)
 
         # input_fn的内容也是个张亮
         # (<tf.Tensor 'IteratorGetNext_2:0' shape=(?,) dtype=float32>, <tf.Tensor 'IteratorGetNext_2:1' shape=(?,) dtype=float64>)
