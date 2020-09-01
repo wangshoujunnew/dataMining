@@ -57,18 +57,25 @@ class Forwarding(threading.Thread):
 
 if __name__ == '__main__':
     print('Starting')
-    import sys
+    # 端口转发配置
+    config = [
+        {"remotePort": 6070, "localPort": 16070, "remoteIp": "172.31.84.109", "desc": "rank 解释工具"},
+        # 存在的问题, 对一个大系统网站不友好, 域名总是改变, 可以通过修改 host, 将某个域名直接指向到某台主机上 ok 完美
+        # 使用代理的方式, 在本地开通一个代理 50011, 然后 50011 是隐射到 46 跳板机的, 当有流量访问到本地 50011 端口, 则直接使用跳板机访问
+        # 浏览器上使用 switch proxy
+        {"remotePort": 443, "localPort": 1443, "remoteIp": "10.95.149.43", "desc": "去哪儿 wiki"},
+    ]
 
-    try:
-        port = int(sys.argv[1])
-        targethost = sys.argv[2]
+    for cf in config:
         try:
-            targetport = int(sys.argv[3])
-        except IndexError:
-            targetport = port
-    except (ValueError, IndexError):
-        print('Usage: %s port targethost [targetport]' % sys.argv[0])
-        sys.exit(1)
-
-    # sys.stdout = open('forwaring.log', 'w')
-    Forwarding(port, targethost, targetport).start()
+            port = cf.get("localPort", cf["remotePort"])
+            targetport = cf["remotePort"]
+            targethost = cf["remoteIp"]
+            print((port, targethost, targetport))
+            Forwarding(port, targethost, targetport).start()
+            print("success")
+        except (ValueError, IndexError):
+            print('Usage: %s port targethost [targetport]' % sys.argv[0])
+            continue
+            # sys.exit(1)
+        # sys.stdout = open('forwaring.log', 'w')
