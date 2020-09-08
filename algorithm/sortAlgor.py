@@ -128,3 +128,130 @@ def mkKuoHaoN(pois, left, right, n):
             tmpPois = deepcopy(pois)
             tmpPois[i] = "("
             mkKuoHaoN()
+
+
+# 水壶问题
+x = 1
+y = 3
+z = 2
+
+# 定义操作节点
+ops = ["clearX", "clearY", "fillX", "fillY", "X2Y", "Y2X"]
+initState = (0, 0)
+endState = {(1, 2), (0, 2)}
+
+curState = None
+
+
+def shuihu(x, y, z, hasOps=None):
+    global curState
+    if curState is None:
+        curState = initState
+    if curState in endState:
+        print("找到了可行解")
+        print(ops)
+        return
+    for op in ops:
+        if op in hasOps:
+            return
+
+        if op == "clearX":
+            x = 0
+        elif op == "clearY":
+            y = 0
+        elif op == "fillX":
+            x = 1
+        elif op == "fillY":
+            y = 3
+        elif op == "X2Y":
+            diff = 3 - y
+            if x >= diff:
+                y = 3
+                x = x - diff
+            else:
+                tmp = x
+                x = 0
+                y += tmp
+
+        elif op == "Y2X":
+            diff = 3 - x
+            if y >= diff:
+                x = 1
+                y = y - diff
+            else:
+                tmp = y
+                y = 0
+                x += tmp
+
+
+        tmpOps = deepcopy(hasOps)
+        tmpOps.add(op)
+        shuihu(x, y, z, tmpOps)
+
+# 二叉树的构建
+preorder = [3,9,20,15,7] # 前序遍历
+midorder = [9,3,15,20,7] # 中序遍历
+# 3是树根, 3 有左子树 9, 右子树 15,20,7
+class Node:
+    def __int__(self):
+        self.left = None
+        self.right = None
+        self.value = None
+
+def f1(value, pres, mids):
+    # pre 前序, mids 中序
+    leftListPre, leftListMid, rightListPre, rightListMid = [], [], [], []
+
+    split = -1
+    for i in range(len(mids)):
+        if mids[i] == value: # 左边的是左子树, 右边的是右子树
+            split = i
+            break;
+    if split != -1:
+        leftListMid = mids[0:split]
+        rightListMid = mids[split+1:len(mids)]
+    else:
+        rightListMid = mids
+
+
+    for i in range(1, len(pres)):
+        if pres[i] in leftListMid:
+            leftListPre.append(pres[i])
+        else:
+            rightListPre.append(pres[i])
+
+    return leftListPre, leftListMid, rightListPre, rightListMid
+
+def erchashu(preorder, midorder):
+    root = Node()
+    root.left = None
+    root.right = None
+    root.value = preorder[0]
+
+    # 得到左子树的先序遍历和中序遍历
+    # 在 midorder 中找到 root.value 的位置
+    leftListPre, leftListMid, rightListPre, rightListMid = f1(root.value, preorder, midorder)
+    if leftListPre != None and leftListMid != None and len(leftListPre) > 0 and len(leftListMid) > 0:
+        root.left = erchashu(leftListPre, leftListMid)
+    if rightListMid != None and rightListPre != None and len(rightListPre) > 0 and len(rightListMid) > 0:
+        root.right = erchashu(rightListPre, rightListMid)
+    return root
+
+root = erchashu(preorder, midorder)
+
+def bianliQian(root):
+    print(root.value)
+    if root.left != None:
+        bianliQian(root.left)
+    if root.right != None:
+        bianliQian(root.right)
+
+def bianliZhong(root):
+    if root.left != None:
+        bianliZhong(root.left)
+    print(root.value)
+    if root.right != None:
+        bianliZhong(root.right)
+
+bianliZhong(root)
+

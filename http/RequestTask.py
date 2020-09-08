@@ -35,10 +35,12 @@ class Comtag:
 
 # 排序,线上
 class unitRank(TestCase):
-    def testDemo(self):
-        print("this is a test")
+    ips = {"134": "10.95.192.134"}
 
     url1 = "http://172.31.84.110:6070"
+    cityId = {
+        "大理": 36,
+    }
     # 1. b中的reqTime是用来干嘛的, 如果没有则给当前的请求时间, 知道了: 是用来提供模型训练的离线服务的
     # distance 的作用, 可能输入的distance > 5km的时候用, 为啥要这样呢? >5km的时候为啥要设置地标名称为空呢
     # 入住日期和离店日期为空的话就默认今住明离(任意为空时), 入住时间,当天23点59分, 并计算一个入住时间到请求时间的天数
@@ -46,37 +48,87 @@ class unitRank(TestCase):
     # roomChannelWeight 干嘛的
     # 城市地标场景下的默认热配置 CityLandmarkConfig
     # List<Integer> sortUnitIds = rankService.getSortCityIds(bParam.getChannel(), cityId) 这是什么排序
-    b = {
-        "cityId": 8,
-        "coord": "",
-        "landmarkName": "",
-        "sort": "recommend",
-        "manual": 1,
-        "bucket": "G",
-        "checkinDate": "2020-06-18",
-        "checkoutDate": "2020-06-19",
-        "peopleNum": 0,
-        "bedNum": 0,
-        "channel": 8,
-        "originchannel": 8
-    }
-    # c = {"userId": 121534595}
+    b = """
+    {
+  "compress": true,
+  "sourceScene": "unit_list",
+  "geoPositionType": -1,
+  "bitVersion": 1598983230090,
+  "ctripBusinessAreaId": 0,
+  "recallDistance": 0.0,
+  "enumWrapperId": "wapctripbnb",
+  "searchOptions": [],
+  "bucketDiscount": "B",
+  "bucketOperate": "B",
+  "isSkipScore": false,
+  "bit2HouseIdSet": [],
+  "ifAllRoom": 0,
+  "cityId": 36,
+  "coord": "26.893882,100.226938",
+  "landmarkName": "香格里拉大道",
+  "distance": 5000.0,
+  "foreign": false,
+  "searchType": 2,
+  "manual": 1,
+  "bucket": "C",
+  "returnAdUnits": 1,
+  "conditionType": 0,
+  "pageIndex": 1,
+  "checkinDate": "2020-10-01",
+  "checkoutDate": "2020-10-03",
+  "peopleNum": 0,
+  "bedNum": 0,
+  "debug": false,
+  "ifwrite": false,
+  "reqtime": "Sep 2, 2020 6:00:00 PM",
+  "days2checkin": 29,
+  "deductionTime": "Oct 1, 2020 12:00:00 PM",
+  "checkinTime": "Oct 1, 2020 11:59:59 PM",
+  "scene": "landmark",
+  "returnScore": false,
+  "searchUnitId": 0,
+  "similarThreshold": 0.5,
+  "similarRoomCount": 0,
+  "userOrdercostByQunar": -1.0,
+  "nullCheckDate": false,
+  "type": 0,
+  "channel": 8,
+  "originchannel": 1,
+  "hotelChannel": 0,
+  "hotelId": 0
+}
+    """
+
+#     c = """
+#     {
+#   "userId": 129202082,
+#   "deviceId": "12001155410028124832",
+#   "coord": "31.166202545166016,121.12298583984375",
+#   "appVersion": "235",
+#   "deviceType": 2,
+#   "deviceModel": null,
+#   "clientInfo": null,
+#   "userInfoDto": null,
+#   "guestCount": 1,
+#   "traceId": "4cce1c10-8569-4dc7-a923-7208584fc915"
+# }
+#     """
+#     c = json.loads(c)
     c = {}
+    b = json.loads(b)
     url = url1
 
     def test_rankv2(self):
         debug = "true"
+        ip = unitRank.ips["134"]
         param = "?b={}&c={}&debug={}".format(json.dumps(unitRank.b), json.dumps(unitRank.c), debug)
-        r = requests.get("{}/rankv2{}".format("http://172.31.90.46:6070", param))
-
+        url = "{}/rankv2{}".format(f"http://{ip}:6070/unitRank", param)
+        print(url)
+        r = requests.get(url)
         print(r.status_code)
-        j = json.loads(r.text)
-        j
-        # print(r.text)
-
-    def testBaidu(self):
-        requests.get("http://www.baidu.com")
-
+        if r.status_code == 200:
+            j = json.loads(r.text)
+            j
     def test_epSelect(self):
         """
         解释性服务 rankv2 接口
